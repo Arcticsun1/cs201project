@@ -69,7 +69,7 @@ public class Parser {
     }
 
     // Helper method to extract content inside parentheses
-    private String queryBetweenParentheses(String[] tokens, int startIndex) {
+    public String queryBetweenParentheses(String[] tokens, int startIndex) {
         StringBuilder result = new StringBuilder();
         for (int i = startIndex; i < tokens.length; i++) {
             result.append(tokens[i]).append(" ");
@@ -78,7 +78,7 @@ public class Parser {
     }
 
     // Helper method to determine if a string is an operator
-    private boolean isOperator(String token) {
+    public boolean isOperator(String token) {
         return token.equals("=") || token.equals(">") || token.equals("<") || token.equals(">=") || token.equals("<=");
     }
 }

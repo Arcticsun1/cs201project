@@ -10,6 +10,7 @@ import lombok.Setter;
 public class Table {
 
     private List<String> columns;
+
     // first string is the id, then after that is the variables
     private Map <String , String[]> rows = new HashMap<>();
     private int numCols;
@@ -22,6 +23,7 @@ public class Table {
             numCols++;
         }
     }
+
     // public void insert(String[] variables){
     //     if (variables.length != numCols){
     //         return

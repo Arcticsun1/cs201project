@@ -5,7 +5,7 @@ import java.util.*;
 public class Engine {
 
     private Map <String , Table> tables = new HashMap<>();
-
+    private Parser parser = new Parser();
     public String executeSQL(String query) {
         String[] tokens = query.trim().split("\\s+");
         String command = tokens[0].toUpperCase();
@@ -50,9 +50,11 @@ public class Engine {
         }
 
         String tableName = tokens[2];
-
-        
-        return "not implemented";
+        String insertQuery = parser.queryBetweenParentheses(tokens, 4);
+        String[] columns = insertQuery.split(" ");
+        Table toAdd = new Table(columns);
+        tables.put(tableName , toAdd);
+        return "Table " + tableName + " created";
     }
 
 }
