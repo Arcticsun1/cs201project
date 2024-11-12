@@ -11,6 +11,7 @@ import java.util.List;
  * Example usage of some code in this parser can be found in the sample implementation.
  * However, the sample implementation does not have a 'Parser' class.
  */
+
 public class Parser {
 
     public void parseInsert(String[] tokens) {
@@ -72,7 +73,7 @@ public class Parser {
     public String queryBetweenParentheses(String[] tokens, int startIndex) {
         StringBuilder result = new StringBuilder();
         for (int i = startIndex; i < tokens.length; i++) {
-            result.append(tokens[i]).append(" ");
+            result.append(tokens[i].replaceAll("," , "").trim()).append(" ");
         }
         return result.toString().trim().replaceAll("\\(", "").replaceAll("\\)", "");
     }
