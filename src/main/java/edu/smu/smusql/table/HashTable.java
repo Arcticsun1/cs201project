@@ -1,6 +1,5 @@
 package edu.smu.smusql.table;
 
-import edu.smu.smusql.Parser;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +12,7 @@ public class HashTable extends Table {
     private Map<String , String[]> rows = new HashMap<>();
     private int numCols;
 
-    public List <String> getColumns(){
+    public List<String> getColumns(){
         return columns;
     }
     public HashTable(String[] variables){
