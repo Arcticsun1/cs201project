@@ -6,7 +6,7 @@ import java.util.*;
 public interface Table {
 
     int getNumCols();
-    Map <String , ArrayList <String>> getRows();
+    Map <String , String[]> getRows();
     Collection <String> getColumns();
     void insert(String[] values);
     int update(String[] tokens);

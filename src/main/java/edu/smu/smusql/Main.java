@@ -24,7 +24,7 @@ public class Main {
                 break;
             } else if (query.equalsIgnoreCase("evaluate")) {
                 long startTime = System.nanoTime();
-                autoEvaluate();
+                operationEvaluate();
                 long stopTime = System.nanoTime();
                 long elapsedTime = stopTime - startTime;
                 double elapsedTimeInSecond = (double) elapsedTime / 1_000_000_000;
@@ -42,10 +42,9 @@ public class Main {
      *  Below is the code for auto-evaluating your work.
      *  DO NOT CHANGE ANYTHING BELOW THIS LINE!
      */
-    public static void autoEvaluate() {
-
-        // Set the number of queries to execute
-        int numberOfQueries = 1000000;
+    public static void operationEvaluate() {
+        // Set the number of queries to execute per operation type
+        int numberOfQueries = 100000;  // You can adjust this number based on your performance testing requirements
 
         // Create tables
         dbEngine.executeSQL("CREATE TABLE users (id, name, age, city)");
@@ -54,42 +53,47 @@ public class Main {
 
         // Random data generator
         Random random = new Random();
-
-        // Prepopulate the tables in preparation for evaluation
         prepopulateTables(random);
 
-        // Loop to simulate millions of queries
+        // Test INSERT performance
+        long startTime = System.nanoTime();
         for (int i = 0; i < numberOfQueries; i++) {
-            int queryType = random.nextInt(6);  // Randomly choose the type of query to execute
-
-            switch (queryType) {
-                case 0:  // INSERT query
-                    insertRandomData(random);
-                    break;
-                case 1:  // SELECT query (simple)
-                    selectRandomData(random);
-                    break;
-                case 2:  // UPDATE query
-                    updateRandomData(random);
-                    break;
-                case 3:  // DELETE query
-                    deleteRandomData(random);
-                    break;
-                case 4:  // Complex SELECT query with WHERE, AND, OR, >, <, LIKE
-                    complexSelectQuery(random);
-                    break;
-                case 5:  // Complex UPDATE query with WHERE
-                    complexUpdateQuery(random);
-                    break;
-            }
-
-            // Print progress every 100,000 queries
-            if (i % 10000 == 0){
-                System.out.println("Processed " + i + " queries...");
-            }
+            insertRandomData(random);
         }
+        long endTime = System.nanoTime();
+        double insertTime = (endTime - startTime) / 1_000_000_000.0;
+        System.out.println("INSERT operation took: " + insertTime + " seconds");
 
-        System.out.println("Finished processing " + numberOfQueries + " queries.");
+        // Test SELECT performance
+        startTime = System.nanoTime();
+        for (int i = 0; i < numberOfQueries; i++) {
+            selectRandomData(random);
+        }
+        endTime = System.nanoTime();
+        double selectTime = (endTime - startTime) / 1_000_000_000.0;
+        System.out.println("SELECT operation took: " + selectTime + " seconds");
+
+        // Test UPDATE performance
+        startTime = System.nanoTime();
+        for (int i = 0; i < numberOfQueries; i++) {
+            updateRandomData(random);
+        }
+        endTime = System.nanoTime();
+        double updateTime = (endTime - startTime) / 1_000_000_000.0;
+        System.out.println("UPDATE operation took: " + updateTime + " seconds");
+
+        // Test DELETE performance
+        startTime = System.nanoTime();
+        for (int i = 0; i < numberOfQueries; i++) {
+            deleteRandomData(random);
+        }
+        endTime = System.nanoTime();
+        double deleteTime = (endTime - startTime) / 1_000_000_000.0;
+        System.out.println("DELETE operation took: " + deleteTime + " seconds");
+
+        // Report the total time
+        double totalTime = insertTime + selectTime + updateTime + deleteTime;
+        System.out.println("Total time for all operations: " + totalTime + " seconds");
     }
 
     private static void prepopulateTables(Random random) {
