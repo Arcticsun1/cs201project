@@ -15,7 +15,7 @@ public class Main {
     public static final String[] validModes = {"hashDylan"};
     static Engine dbEngine = new Engine();
     public static void main(String[] args) {
-
+        dbEngine.setMode(validModes[0]);
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("smuSQL Starter Code version 0.5");
@@ -23,30 +23,36 @@ public class Main {
 
         while (true) {
             System.out.print("smusql> ");
-            String query = scanner.nextLine();
+            String query = scanner.nextLine().toLowerCase();
+            switch (query) {
+                case "exit":
+                    break;
+                case "custom evaluate":
+                    customEvaluate();
+                    break;
+                case "clear":
+                    System.out.println("clearing memory");
+                    dbEngine.clear();
+                    break;
+                case "change mode":
+                    System.out.println("which mode would you like to switch to?");
+                    for (int i = 0; i < validModes.length; i++) {
+                        System.out.println(i + " :" + validModes[i]);
+                    }
+                    int option = scanner.nextInt();
+                    if (option < 0 || option >= validModes.length) {
+                        System.out.println("option invalid");
+                    } else {
+                        dbEngine.setMode(validModes[option]);
+                    }
+                    break;
+                default:
+                    System.out.println(dbEngine.executeSQL(query));
+                    break;
+            }
             if (query.equalsIgnoreCase("exit")) {
                 break;
-            } else if (query.equalsIgnoreCase("custom evaluate")){
-                customEvaluate();
-            } else if (query.equalsIgnoreCase("clear")) {
-                System.out.println("clearing memory");
-                dbEngine.clear();
-            } else if (query.equalsIgnoreCase("change mode")){
-                System.out.println("which mode would you like to switch to?");
-                for (int i = 0 ; i < validModes.length ; i++){
-                    System.out.println(i + " :" + validModes[i]);
-                }
-                int option = scanner.nextInt();
-                if (option < 0 || option >= validModes.length){
-                    System.out.println("option invalid");
-                }
-                dbEngine.setMode(validModes[option]);
             }
-            else{
-                System.out.println(dbEngine.executeSQL(query));
-            }
-
-
         }
         scanner.close();
     }
