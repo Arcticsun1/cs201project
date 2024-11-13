@@ -9,7 +9,7 @@ public interface Table {
     Map <String , ArrayList <String>> getRows();
     Collection <String> getColumns();
     void insert(String[] values);
-    void update(String[] tokens);
-    void delete(String[] tokens);
-    void select(String[] tokens);
+    int update(String[] tokens);
+    int delete(String[] tokens);
+    List <List<String>> select(String[] tokens);
 }

@@ -56,11 +56,20 @@ public class Engine {
 
     public String delete(String[] tokens) {
         //TODO
-        return "not implemented";
+        if (!tokens[1].toUpperCase().equals("FROM")) {
+            return "ERROR: Invalid DELETE syntax";
+        }
+        String tableName = tokens[2];
+        if (!tables.containsKey(tableName)) {
+            return "No such Table: " + tableName;
+        }
+        Table table = tables.get(tableName);
+        int rowsDeleted = table.delete(tokens);
+
+        return rowsDeleted + " rows deleted from table:" + tableName;
     }
 
     public String select(String[] tokens) {
-        //TODO
         if (!tokens[1].equals("*") || !tokens[2].toUpperCase().equals("FROM")) {
             return "ERROR: Invalid SELECT syntax";
         }
@@ -69,14 +78,13 @@ public class Engine {
             return "No such Table: " + tableName;
         }
         Table table = tables.get(tableName);
-        Map<String, ArrayList<String>> rows = table.getRows();
+        List <List <String>> rows = table.select(tokens);
 
         StringBuilder result = new StringBuilder();
         result.append(String.join("\t", table.getColumns())).append("\n");
 
-        for (String r : rows.keySet()){
-            Collection <String> values = rows.get(r);
-            for (String v : values){
+        for (List<String> r : rows){
+            for (String v : r){
                 result.append(v).append("\t");
             }
             result.append("\r\n");
@@ -86,7 +94,23 @@ public class Engine {
 
     public String update(String[] tokens) {
         //TODO
-        return "not implemented";
+        //"UPDATE orders SET quantity = " + newQuantity + " WHERE id = " + orderId
+        if (!tokens[2].toUpperCase().equals("SET") || !tokens[4].equals("=")) {
+            return "ERROR: Invalid UPDATE syntax";
+        }
+        String tableName = tokens[1];
+        if (!tables.containsKey(tableName)) {
+            return "No such Table: " + tableName;
+        }
+
+        Table table = tables.get(tableName);
+
+        String columnChanged = tokens[3];
+        if (!table.getColumns().contains(columnChanged)){
+            return "Table:" + tableName + " does not contain column:" + columnChanged;
+        }
+        int rowsChanged = table.update(tokens);
+        return rowsChanged + " rows successfully changed";
     }
 
     public String create(String[] tokens) {
@@ -99,7 +123,10 @@ public class Engine {
             return "Invalid create query, there are no column names";
         }
         String[] columns = insertQuery.split(" ");
-        Table toAdd = new HashTable(columns);
+        Table toAdd = null;
+        if (columns.length > 0){
+            toAdd = new HashTable(columns);
+        }
         tables.put(tableName, toAdd);
         return "Table " + tableName + " created";
     }

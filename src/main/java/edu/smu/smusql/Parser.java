@@ -1,8 +1,6 @@
 package edu.smu.smusql;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /*
  * This is a rudimentary parser you may want to use to parse smuSQL statements.
@@ -81,5 +79,91 @@ public class Parser {
     // Helper method to determine if a string is an operator
     public boolean isOperator(String token) {
         return token.equals("=") || token.equals(">") || token.equals("<") || token.equals(">=") || token.equals("<=");
+    }
+    public List<String[]> whereConditions(String[] arguments, int startingIndex) {
+        List<String[]> result = new ArrayList<>();
+        if (arguments.length <= startingIndex || !arguments[startingIndex].equalsIgnoreCase("WHERE")) {
+            return new ArrayList<>();
+        }
+
+        for (int i = startingIndex + 1; i < arguments.length; i++) {
+            if (arguments[i].equalsIgnoreCase("AND") || arguments[i].equalsIgnoreCase("OR")) {
+                // Add AND/OR conditions
+                result.add(new String[]{arguments[i].toUpperCase(), null, null, null});
+            } else if (isOperator(arguments[i])) {
+                // Add condition with operator (column, operator, value)
+                String column = arguments[i - 1];
+                String operator = arguments[i];
+                String value = arguments[i + 1];
+                result.add(new String[]{null, column, operator, value});
+                i += 1; // Skip the value since it has been processed
+            }
+        }
+        return result;
+    }
+
+    public boolean evaluateWhereCondition(List <String> row , Map <String , Integer> columns , List <String[]> whereConditions){
+        boolean overallMatch = true;
+        boolean nextConditionShouldMatch = true;
+        for (int i = 0 ; i < row.size() ; i++){
+            for (String[] condition : whereConditions){
+                if (condition[0] != null) { // AND/OR operator
+                    nextConditionShouldMatch = condition[0].equals("AND");
+                } else {
+                    // Parse column, operator, and value
+                    String column = condition[1];
+                    String operator = condition[2];
+                    String value = condition[3];
+
+                    int columnIndex = columns.get(column);
+                    String columnValue = row.get(columnIndex);
+                    boolean currentMatch = evaluateCondition(columnValue, operator, value);
+
+                    if (nextConditionShouldMatch) {
+                        overallMatch = overallMatch && currentMatch;
+                    } else {
+                        overallMatch = overallMatch || currentMatch;
+                    }
+                }
+            }
+        }
+        return overallMatch;
+    }
+
+    private boolean evaluateCondition (String columnValue , String operator , String value){
+        if (columnValue == null) return false;
+
+        // Compare strings as numbers if possible
+        boolean isNumeric = isNumeric(columnValue) && isNumeric(value);
+        if (isNumeric) {
+            double columnNumber = Double.parseDouble(columnValue);
+            double valueNumber = Double.parseDouble(value);
+
+            switch (operator) {
+                case "=": return columnNumber == valueNumber;
+                case ">": return columnNumber > valueNumber;
+                case "<": return columnNumber < valueNumber;
+                case ">=": return columnNumber >= valueNumber;
+                case "<=": return columnNumber <= valueNumber;
+            }
+        } else {
+            switch (operator) {
+                case "=": return columnValue.equals(value);
+                case ">": return columnValue.compareTo(value) > 0;
+                case "<": return columnValue.compareTo(value) < 0;
+                case ">=": return columnValue.compareTo(value) >= 0;
+                case "<=": return columnValue.compareTo(value) <= 0;
+            }
+        }
+
+        return false;
+    }
+    private boolean isNumeric(String value){
+        try{
+            Double.parseDouble(value);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
     }
 }
