@@ -11,7 +11,8 @@ public class Main {
      *  Main method for accessing the command line interface of the database engine.
      *  MODIFICATION OF THIS FILE IS NOT RECOMMENDED!
      */
-    public static final int MB = 1024 * 1024;
+    public static final int KB = 1024;
+    public static final String[] validModes = {"hashDylan"};
     static Engine dbEngine = new Engine();
     public static void main(String[] args) {
 
@@ -25,17 +26,23 @@ public class Main {
             String query = scanner.nextLine();
             if (query.equalsIgnoreCase("exit")) {
                 break;
-            } else if (query.equalsIgnoreCase("evaluate")) {
-                long startTime = System.nanoTime();
-                operationEvaluate();
-                long stopTime = System.nanoTime();
-                long elapsedTime = stopTime - startTime;
-                double elapsedTimeInSecond = (double) elapsedTime / 1_000_000_000;
-                System.out.println("Time elapsed: " + elapsedTimeInSecond + " seconds");
-                break;
             } else if (query.equalsIgnoreCase("custom evaluate")){
                 customEvaluate();
-            } else{
+            } else if (query.equalsIgnoreCase("clear")) {
+                System.out.println("clearing memory");
+                dbEngine.clear();
+            } else if (query.equalsIgnoreCase("change mode")){
+                System.out.println("which mode would you like to switch to?");
+                for (int i = 0 ; i < validModes.length ; i++){
+                    System.out.println(i + " :" + validModes[i]);
+                }
+                int option = scanner.nextInt();
+                if (option < 0 || option >= validModes.length){
+                    System.out.println("option invalid");
+                }
+                dbEngine.setMode(validModes[option]);
+            }
+            else{
                 System.out.println(dbEngine.executeSQL(query));
             }
 
@@ -50,6 +57,22 @@ public class Main {
      *  DO NOT CHANGE ANYTHING BELOW THIS LINE!
      */
     public static void customEvaluate(){
+        System.out.println("Size of query options");
+        System.out.println("1: 100,000 queries");
+        System.out.println("2: 10,000 queries");
+        System.out.println("3: 2500 queries");
+        int option = 0;
+        Scanner scanner = new Scanner(System.in);
+        try{
+            option = Integer.parseInt(scanner.next());
+            if (option > 3 || option <= 0){
+                System.out.println("invalid option, exiting menu");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("invalid option, exiting evaluation");
+            return;
+        }
         //creating tables
         try {
             Scanner fileReader = new Scanner(new File("src/main/resources/createTables.txt"));
@@ -57,7 +80,7 @@ public class Main {
                 String line = fileReader.nextLine();
                 dbEngine.executeSQL(line);
             }
-            fileReader = new Scanner(new File("src/main/resources/testInsert.txt"));
+            fileReader = new Scanner(new File("src/main/resources/testInsert" + option +".txt"));
             List <String> queries = new ArrayList<>();
             while (fileReader.hasNextLine()){
                 String line = fileReader.nextLine();
@@ -80,8 +103,8 @@ public class Main {
             long memoryUsedAfter = totalMemoryAfter - freeMemoryAfter;
 
             long timeInMS = (endTime - startTime) / 1_000_000;
-            long totalMemoryUsedByFunction = (memoryUsedAfter - memoryUsedBefore) / MB;
-            System.out.println(totalMemoryUsedByFunction + " MB used");
+            long totalMemoryUsedByFunction = (memoryUsedAfter - memoryUsedBefore) / KB;
+            System.out.println(totalMemoryUsedByFunction + " KB used");
             System.out.println(timeInMS + "ms to run the insert");
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);

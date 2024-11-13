@@ -2,11 +2,15 @@ package edu.smu.smusql;
 
 import edu.smu.smusql.table.HashTable;
 import edu.smu.smusql.table.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.*;
 
+@Getter
+@Setter
 public class Engine {
-
+    private String mode;
     private Map<String, Table> tables = new HashMap<>();
     private Parser parser = new Parser();
 
@@ -122,8 +126,11 @@ public class Engine {
         }
         String[] columns = insertQuery.split(" ");
         Table toAdd = null;
-        if (columns.length > 0){
-            toAdd = new HashTable(columns);
+        switch (mode){
+            case "hashDylan":
+                toAdd = new HashTable(columns);
+            default:
+                toAdd = new HashTable(columns);
         }
         tables.put(tableName, toAdd);
         return "Table " + tableName + " created";
@@ -150,5 +157,14 @@ public class Engine {
             }
         }
         return result;
+    }
+    public void clear(){
+        for (String s : tables.keySet()){
+            Table toClear = tables.get(s);
+            toClear.clear();
+            toClear = null;
+        }
+        tables.clear();
+        System.gc();
     }
 }

@@ -20,4 +20,6 @@ public abstract class Table {
     public abstract int update(String[] tokens);
     public abstract int delete(String[] tokens);
     public abstract List <List<String>> select(String[] tokens);
+
+    public abstract void clear();
 }

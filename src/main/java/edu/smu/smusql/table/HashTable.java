@@ -80,4 +80,9 @@ public class HashTable extends Table {
         }
         return result;
     }
+
+    public void clear(){
+        rows.clear();
+        rows = null;
+    }
 }
