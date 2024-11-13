@@ -35,7 +35,7 @@ public class HashTable extends Table {
         rows.put(tokens[0] , tokens);
     }
     public int update(String[] tokens){
-        //"UPDATE orders SET quantity = " + newQuantity + " WHERE id = " + orderId
+        //"UPDATE orders SET quantity = " + newQuantity + " WHERE id = " + orderId;
 
         int result = 0;
         List <String[]> whereConditions = parser.whereConditions(tokens , 6);

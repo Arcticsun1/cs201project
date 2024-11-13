@@ -1,4 +1,4 @@
-CREATE TABLE users (id, name, email, password);
-CREATE TABLE posts (id, user_id, content);
-CREATE TABLE comments (id, user_id, post_id, content);
-CREATE TABLE likes (id, user_id, post_id);
+CREATE TABLE users (id, name, email, password)
+CREATE TABLE posts (id, user_id, content)
+CREATE TABLE comments (id, user_id, post_id, content)
+CREATE TABLE likes (id, user_id, post_id)
