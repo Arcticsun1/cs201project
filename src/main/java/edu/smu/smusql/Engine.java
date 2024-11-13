@@ -55,7 +55,6 @@ public class Engine {
     }
 
     public String delete(String[] tokens) {
-        //TODO
         if (!tokens[1].toUpperCase().equals("FROM")) {
             return "ERROR: Invalid DELETE syntax";
         }
@@ -93,7 +92,6 @@ public class Engine {
     }
 
     public String update(String[] tokens) {
-        //TODO
         //"UPDATE orders SET quantity = " + newQuantity + " WHERE id = " + orderId
         if (!tokens[2].toUpperCase().equals("SET") || !tokens[4].equals("=")) {
             return "ERROR: Invalid UPDATE syntax";

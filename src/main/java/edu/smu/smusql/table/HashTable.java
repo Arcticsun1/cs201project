@@ -8,21 +8,10 @@ import java.util.*;
 
 @Getter
 @Setter
-public class HashTable implements Table {
-    private Parser parser = new Parser();
-    private List <String> columns;
-    private Map <String , Integer> columnIndex = new HashMap<>();
+public class HashTable extends Table {
     // first string is the id, then after that is the variables
     private Map<String , String[]> rows = new HashMap<>();
     private int numCols;
-
-    public int getNumCols() {
-        return numCols;
-    }
-
-    public Map<String, String[]> getRows(){
-        return rows;
-    }
 
     public List <String> getColumns(){
         return columns;

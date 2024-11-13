@@ -1,14 +1,17 @@
 package edu.smu.smusql;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
-
-// @author ziyuanliu@smu.edu.sg
 
 public class Main {
     /*
      *  Main method for accessing the command line interface of the database engine.
      *  MODIFICATION OF THIS FILE IS NOT RECOMMENDED!
      */
+    public static final int MB = 1024 * 1024;
     static Engine dbEngine = new Engine();
     public static void main(String[] args) {
 
@@ -30,9 +33,13 @@ public class Main {
                 double elapsedTimeInSecond = (double) elapsedTime / 1_000_000_000;
                 System.out.println("Time elapsed: " + elapsedTimeInSecond + " seconds");
                 break;
+            } else if (query.equalsIgnoreCase("custom evaluate")){
+                customEvaluate();
+            } else{
+                System.out.println(dbEngine.executeSQL(query));
             }
 
-            System.out.println(dbEngine.executeSQL(query));
+
         }
         scanner.close();
     }
@@ -42,6 +49,44 @@ public class Main {
      *  Below is the code for auto-evaluating your work.
      *  DO NOT CHANGE ANYTHING BELOW THIS LINE!
      */
+    public static void customEvaluate(){
+        //creating tables
+        try {
+            Scanner fileReader = new Scanner(new File("src/main/resources/createTables.txt"));
+            while (fileReader.hasNextLine()){
+                String line = fileReader.nextLine();
+                dbEngine.executeSQL(line);
+            }
+            fileReader = new Scanner(new File("src/main/resources/testInsert.txt"));
+            List <String> queries = new ArrayList<>();
+            while (fileReader.hasNextLine()){
+                String line = fileReader.nextLine();
+                queries.add(line);
+            }
+            fileReader.close();
+            Runtime runtime = Runtime.getRuntime();
+            long totalMemoryBefore = runtime.totalMemory();
+            long freeMemoryBefore = runtime.freeMemory();
+            long memoryUsedBefore = totalMemoryBefore - freeMemoryBefore;
+
+            long startTime = System.nanoTime();
+            for (String s : queries){
+                dbEngine.executeSQL(s);
+            }
+            long endTime = System.nanoTime();
+
+            long totalMemoryAfter = runtime.totalMemory();
+            long freeMemoryAfter = runtime.freeMemory();
+            long memoryUsedAfter = totalMemoryAfter - freeMemoryAfter;
+
+            long timeInMS = (endTime - startTime) / 1_000_000;
+            long totalMemoryUsedByFunction = (memoryUsedAfter - memoryUsedBefore) / MB;
+            System.out.println(totalMemoryUsedByFunction + " MB used");
+            System.out.println(timeInMS + "ms to run the insert");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
     public static void operationEvaluate() {
         // Set the number of queries to execute per operation type
         int numberOfQueries = 100000;  // You can adjust this number based on your performance testing requirements
