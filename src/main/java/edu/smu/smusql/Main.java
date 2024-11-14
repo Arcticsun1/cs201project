@@ -39,6 +39,11 @@ public class Main {
                     customRun("select/testSelect");
                     System.gc();
                     break;
+                case "custom update":
+                    dbEngine.clear();
+                    System.gc();
+                    customNonIdempotent("update/testUpdate");
+                    break;
                 case "clear":
                     System.out.println("clearing memory");
                     dbEngine.clear();
@@ -52,7 +57,8 @@ public class Main {
                     dbEngine.clear();
                     System.gc();
                     customNonIdempotent("delete/testDelete");
-
+                    System.out.println("remember to clear and reset the tables before rerunning");
+                    break;
                 case "custom easyupdate":
                     customNonIdempotent("easyUpdate/testEasyUpdate");
                     System.out.println("remember to clear and reset the tables before rerunning");
@@ -156,7 +162,7 @@ public class Main {
             System.out.println("reinitialising data");
             dbEngine.clear();
             readFile("createTables");
-            readFile("populate/populate2");
+            readFile("populate/populate3");
             readFile(filename + i);
         }
     }
@@ -175,6 +181,7 @@ public class Main {
             long memoryUsedBefore = totalMemoryBefore - freeMemoryBefore;
             System.out.println("file Read , executing test queries...");
             long startTime = System.nanoTime();
+
             for (String s : queries){
                 dbEngine.executeSQL(s);
             }
