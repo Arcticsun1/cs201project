@@ -51,9 +51,13 @@ public class Main {
                     System.out.println("reinitialising tables");
                     dbEngine.clear();
                     System.gc();
-                    customDelete();
+                    customNonIdempotent("testDelete");
 
-
+                case "custom easyupdate":
+                    customNonIdempotent("testEasyUpdate");
+                    System.out.println("remember to clear and reset the tables before rerunning");
+                    System.gc();
+                    break;
                 default:
                     System.out.println(dbEngine.executeSQL(query));
                     break;
@@ -147,13 +151,13 @@ public class Main {
             evaluate(function + i);
         }
     }
-    public static void customDelete(){
+    public static void customNonIdempotent(String filename){
         for (int i = 3 ; i >= 1 ; i--){
             System.out.println("reinitialising data");
             dbEngine.clear();
             readFile("createTables");
             readFile("populate2");
-            readFile("testDelete" + i);
+            readFile(filename + i);
         }
     }
     public static void readFile(String filename){
