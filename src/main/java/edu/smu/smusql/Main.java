@@ -29,20 +29,31 @@ public class Main {
                     break;
                 case "custom evaluate":
                     customEvaluate();
+                    System.gc();
                     break;
                 case "custom easyselect":
                     customRun("testEasySelect");
+                    System.gc();
                     break;
                 case "custom select":
                     customRun("testSelect");
+                    System.gc();
                     break;
                 case "clear":
                     System.out.println("clearing memory");
                     dbEngine.clear();
+                    System.gc();
                     break;
                 case "change mode":
                     changeMode();
                     break;
+                case "custom delete":
+                    System.out.println("reinitialising tables");
+                    dbEngine.clear();
+                    System.gc();
+                    customDelete();
+
+
                 default:
                     System.out.println(dbEngine.executeSQL(query));
                     break;
@@ -120,12 +131,12 @@ public class Main {
             long totalMemoryAfter = runtime.totalMemory();
             long freeMemoryAfter = runtime.freeMemory();
             long memoryUsedAfter = totalMemoryAfter - freeMemoryAfter;
-
+            queries.add("");
             long timeInMS = (endTime - startTime) / 1_000_000;
             long totalMemoryUsedByFunction = (memoryUsedAfter - memoryUsedBefore) / KB;
             System.out.println(totalMemoryUsedByFunction + " KB used");
             System.out.println(timeInMS + "ms to run the test");
-            System.out.println(queries.size() + " queries processed from " + filepath + file);
+            System.out.println(queries.size() - 1 + " queries processed from " + filepath + file);
             queries.clear();
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -135,5 +146,49 @@ public class Main {
         for (int i = 3 ; i >= 1 ; i--) {
             evaluate(function + i);
         }
+    }
+    public static void customDelete(){
+        for (int i = 3 ; i >= 1 ; i--){
+            System.out.println("reinitialising data");
+            dbEngine.clear();
+            readFile("createTables");
+            readFile("populate2");
+            readFile("testDelete" + i);
+        }
+    }
+    public static void readFile(String filename){
+        try{
+            Scanner scanner = new Scanner(new File(filepath + filename +".txt"));
+            List <String> queries = new ArrayList<>();
+            while (scanner.hasNextLine()){
+                String line = scanner.nextLine();
+                queries.add(line);
+            }
+            scanner.close();
+            Runtime runtime = Runtime.getRuntime();
+            long totalMemoryBefore = runtime.totalMemory();
+            long freeMemoryBefore = runtime.freeMemory();
+            long memoryUsedBefore = totalMemoryBefore - freeMemoryBefore;
+
+            long startTime = System.nanoTime();
+            for (String s : queries){
+                dbEngine.executeSQL(s);
+            }
+            long endTime = System.nanoTime();
+
+            long totalMemoryAfter = runtime.totalMemory();
+            long freeMemoryAfter = runtime.freeMemory();
+            long memoryUsedAfter = totalMemoryAfter - freeMemoryAfter;
+            queries.add("");
+            long timeInMS = (endTime - startTime) / 1_000_000;
+            long totalMemoryUsedByFunction = (memoryUsedAfter - memoryUsedBefore) / KB;
+            System.out.println(totalMemoryUsedByFunction + " KB used");
+            System.out.println(timeInMS + "ms to run the test");
+            System.out.println(queries.size() - 1 + " queries processed from " + filepath + filename);
+            queries.clear();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }
