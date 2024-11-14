@@ -32,11 +32,11 @@ public class Main {
                     System.gc();
                     break;
                 case "custom easyselect":
-                    customRun("testEasySelect");
+                    customRun("easySelect/testEasySelect");
                     System.gc();
                     break;
                 case "custom select":
-                    customRun("testSelect");
+                    customRun("select/testSelect");
                     System.gc();
                     break;
                 case "clear":
@@ -51,10 +51,10 @@ public class Main {
                     System.out.println("reinitialising tables");
                     dbEngine.clear();
                     System.gc();
-                    customNonIdempotent("testDelete");
+                    customNonIdempotent("delete/testDelete");
 
                 case "custom easyupdate":
-                    customNonIdempotent("testEasyUpdate");
+                    customNonIdempotent("easyUpdate/testEasyUpdate");
                     System.out.println("remember to clear and reset the tables before rerunning");
                     System.gc();
                     break;
@@ -94,7 +94,7 @@ public class Main {
 
         //creating tables
         evaluate("createTables");
-        evaluate("testInsert" + option);
+        evaluate("insert/testInsert" + option);
 
     }
     public static void changeMode(){
@@ -156,7 +156,7 @@ public class Main {
             System.out.println("reinitialising data");
             dbEngine.clear();
             readFile("createTables");
-            readFile("populate2");
+            readFile("populate/populate2");
             readFile(filename + i);
         }
     }
@@ -173,7 +173,7 @@ public class Main {
             long totalMemoryBefore = runtime.totalMemory();
             long freeMemoryBefore = runtime.freeMemory();
             long memoryUsedBefore = totalMemoryBefore - freeMemoryBefore;
-
+            System.out.println("file Read , executing test queries...");
             long startTime = System.nanoTime();
             for (String s : queries){
                 dbEngine.executeSQL(s);
