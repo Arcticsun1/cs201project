@@ -1,5 +1,6 @@
 package edu.smu.smusql;
 
+import edu.smu.smusql.table.BPlusTreeTable;
 import edu.smu.smusql.table.HashTable;
 import edu.smu.smusql.table.Table;
 import lombok.Getter;
@@ -129,8 +130,13 @@ public class Engine {
         switch (mode){
             case "hashDylan":
                 toAdd = new HashTable(columns);
+                break;
+            case "bPlusTree":
+                toAdd = new BPlusTreeTable(columns);
+                break;
             default:
                 toAdd = new HashTable(columns);
+                break;
         }
         tables.put(tableName, toAdd);
         return "Table " + tableName + " created";

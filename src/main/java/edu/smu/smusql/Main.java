@@ -12,7 +12,7 @@ public class Main {
      */
     public static final String filepath = "src/main/resources/";
     public static final int KB = 1024;
-    public static final String[] validModes = {"hashDylan"};
+    public static final String[] validModes = {"hashDylan", "bPlusTree"};
     static Engine dbEngine = new Engine();
     public static void main(String[] args) {
         dbEngine.setMode(validModes[0]);
@@ -166,6 +166,7 @@ public class Main {
             readFile(filename + i);
         }
     }
+
     public static void readFile(String filename){
         try{
             Scanner scanner = new Scanner(new File(filepath + filename +".txt"));
