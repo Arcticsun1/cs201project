@@ -15,7 +15,7 @@ public class Main {
     public static final String[] validModes = {"hashDylan"};
     static Engine dbEngine = new Engine();
     public static void main(String[] args) {
-        dbEngine.setMode(validModes[0]);
+        //dbEngine.setMode(validModes[0]);
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("smuSQL Starter Code version 0.5");
@@ -49,9 +49,9 @@ public class Main {
                     dbEngine.clear();
                     System.gc();
                     break;
-                case "change mode":
-                    changeMode();
-                    break;
+                // case "change mode":
+                //     changeMode();
+                //     break;
                 case "custom delete":
                     System.out.println("reinitialising tables");
                     dbEngine.clear();
@@ -103,19 +103,19 @@ public class Main {
         evaluate("insert/testInsert" + option);
 
     }
-    public static void changeMode(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("which mode would you like to switch to?");
-        for (int i = 0; i < validModes.length; i++) {
-            System.out.println(i + " :" + validModes[i]);
-        }
-        int option = scanner.nextInt();
-        if (option < 0 || option >= validModes.length) {
-            System.out.println("option invalid");
-        } else {
-            dbEngine.setMode(validModes[option]);
-        }
-    }
+    // public static void changeMode(){
+    //     Scanner scanner = new Scanner(System.in);
+    //     System.out.println("which mode would you like to switch to?");
+    //     for (int i = 0; i < validModes.length; i++) {
+    //         System.out.println(i + " :" + validModes[i]);
+    //     }
+    //     int option = scanner.nextInt();
+    //     if (option < 0 || option >= validModes.length) {
+    //         System.out.println("option invalid");
+    //     } else {
+    //         dbEngine.setMode(validModes[option]);
+    //     }
+    // }
 
     public static void evaluate(String file){
         Scanner scanner = null;
